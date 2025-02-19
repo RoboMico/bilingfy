@@ -1,0 +1,113 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Bilingfy.ViewModels"
+        xmlns:m="using:Bilingfy.Models"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="https://github.com/projektanker/icons.avalonia"
+        xmlns:conv="using:Bilingfy.Converters"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Bilingfy.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Bilingfy">
+
+  <Design.DataContext>
+      <!-- This only sets the DataContext for the previewer in an IDE,
+           to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+      <vm:MainWindowViewModel/>
+  </Design.DataContext>
+
+  <Window.Resources>
+        <conv:SingleLineTextConverter x:Key="SingleLineTextConverter" />
+  </Window.Resources>
+
+  <Grid ColumnDefinitions="400,Auto,*"
+        RowDefinitions="Auto,*,Auto,*">
+
+    <DockPanel Grid.Row="0"
+               Grid.Column="0"
+               Grid.ColumnSpan="3">
+      <Menu DockPanel.Dock="Top">
+        <MenuItem Header="_File">
+          <MenuItem Header="Open Reference..." Click="MenuOpenReference"/>
+          <MenuItem Header="Open..."/>
+          <MenuItem Header="Save"/>
+          <MenuItem Header="Save As..."/>
+          <Separator/>
+          <MenuItem Header="Options..."/>
+          <Separator/>
+          <MenuItem Header="Exit"/>
+        </MenuItem>
+        <MenuItem Header="_Edit">
+        </MenuItem>
+        <MenuItem Header="_Tools">
+        </MenuItem>
+        <MenuItem Header="_Help">
+          <MenuItem Header="About..."/>
+        </MenuItem>
+      </Menu>
+    </DockPanel>
+
+    <ListBox Name="EntryList"
+             Grid.Row="1"
+             Grid.Column="0"
+             Grid.RowSpan="3"
+             SelectionMode="Single,AlwaysSelected"
+             ItemsSource="{Binding Entries}"
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+             ScrollViewer.VerticalScrollBarVisibility="Visible">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <StackPanel Orientation="Vertical">
+            <TextBlock TextWrapping="NoWrap">
+              <Run Text="{Binding Key,Converter={StaticResource SingleLineTextConverter}}"
+                   FontWeight="Bold"/>
+            </TextBlock>
+            <TextBlock Text="{Binding Source,Converter={StaticResource SingleLineTextConverter}}"
+                       TextWrapping="NoWrap"
+                       Opacity="0.75"/>
+            <TextBlock Text="{Binding Target,Converter={StaticResource SingleLineTextConverter},Mode=TwoWay}"
+                       TextWrapping="NoWrap"
+                       IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNotNullOrEmpty}}}"/>
+            <TextBlock TextWrapping="NoWrap"
+                       IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNullOrEmpty}}}"
+                       Opacity="0.9">
+              <Run Text="Untranslated"
+                   Foreground="Red"/>
+            </TextBlock>
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <GridSplitter Grid.Row="1"
+                  Grid.Column="1"
+                  Grid.RowSpan="3"
+                  Width="10"
+                  ResizeDirection="Columns"/>
+
+    <TextBox Name="SourceText"
+             Grid.Row="1"
+             Grid.Column="2"
+             Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Source,Mode=TwoWay}"
+             IsReadOnly="True"
+             TextWrapping="Wrap">
+    </TextBox>
+
+    <GridSplitter Grid.Row="2"
+                  Grid.Column="2"
+                  Height="10"
+                  ResizeDirection="Rows"/>
+
+    <TextBox Name="TargetText"
+             Grid.Row="3"
+             Grid.Column="2"
+             Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Target,Mode=TwoWay}"
+             TextWrapping="Wrap"
+             AcceptsReturn="True">
+    </TextBox>
+
+  </Grid>
+
+</Window>
