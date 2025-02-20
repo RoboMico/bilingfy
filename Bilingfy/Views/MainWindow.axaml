@@ -23,7 +23,7 @@
   </Window.Resources>
 
   <Grid ColumnDefinitions="400,Auto,*"
-        RowDefinitions="Auto,*,Auto,*">
+        RowDefinitions="Auto,*">
 
     <DockPanel Grid.Row="0"
                Grid.Column="0"
@@ -52,7 +52,6 @@
     <ListBox Name="EntryList"
              Grid.Row="1"
              Grid.Column="0"
-             Grid.RowSpan="3"
              SelectionMode="Single,AlwaysSelected"
              ItemsSource="{Binding Entries}"
              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -83,30 +82,67 @@
 
     <GridSplitter Grid.Row="1"
                   Grid.Column="1"
-                  Grid.RowSpan="3"
-                  Width="10"
+                  Width="5"
                   ResizeDirection="Columns"/>
 
-    <TextBox Name="SourceText"
-             Grid.Row="1"
-             Grid.Column="2"
-             Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Source,Mode=TwoWay}"
-             IsReadOnly="True"
-             TextWrapping="Wrap">
-    </TextBox>
+    <!-- show when selected entry has reference -->
+    <Grid Grid.Row="1"
+          Grid.Column="2"
+          RowDefinitions="*,Auto,*"
+          Margin="8"
+          IsVisible="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).HasReference}">
 
-    <GridSplitter Grid.Row="2"
-                  Grid.Column="2"
-                  Height="10"
-                  ResizeDirection="Rows"/>
+      <Grid Grid.Row="0"
+            RowDefinitions="Auto,*">
+        <StackPanel Grid.Row="0"
+                    Height="32"
+                    Orientation="Horizontal">
+          <TextBlock Text="Source Language"/>
+        </StackPanel>
+        <TextBox Name="SourceText"
+                 Grid.Row="1"
+                 Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Source,Mode=TwoWay}"
+                 IsReadOnly="True"
+                 TextWrapping="Wrap">
+        </TextBox>
+      </Grid>
 
-    <TextBox Name="TargetText"
-             Grid.Row="3"
-             Grid.Column="2"
-             Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Target,Mode=TwoWay}"
-             TextWrapping="Wrap"
-             AcceptsReturn="True">
-    </TextBox>
+      <GridSplitter Grid.Row="1"
+                    Height="10"
+                    ResizeDirection="Rows"/>
+
+      <Grid Grid.Row="2"
+            RowDefinitions="Auto,*">
+        <StackPanel Grid.Row="0"
+                    Height="32">
+          <TextBlock Text="Target Language"/>
+        </StackPanel>
+        <TextBox Name="TargetText"
+                Grid.Row="1"
+                Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Target,Mode=TwoWay}"
+                TextWrapping="Wrap"
+                AcceptsReturn="True">
+        </TextBox>
+      </Grid>
+
+    </Grid>
+
+    <!-- show when selected entry does not have reference -->
+    <Grid Grid.Row="1"
+          Grid.Column="2"
+          RowDefinitions="Auto,*"
+          Margin="8"
+          IsVisible="{Binding ElementName=EntryList,Path=!((m:Entry)SelectedItem).HasReference}">
+      <StackPanel Grid.Row="0"
+                  Height="32">
+      </StackPanel>
+      <TextBox Name="NoRefTargetText"
+              Grid.Row="1"
+              Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Target,Mode=TwoWay}"
+              TextWrapping="Wrap"
+              AcceptsReturn="True">
+      </TextBox>
+    </Grid>
 
   </Grid>
 

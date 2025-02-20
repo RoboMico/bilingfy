@@ -1,4 +1,4 @@
-﻿using Bilingfy.Models;
+using Bilingfy.Models;
 using Bilingfy.Views;
 using System;
 using System.Collections.Generic;

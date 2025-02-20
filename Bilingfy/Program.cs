@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.FontAwesome;
 using System;

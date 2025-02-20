@@ -46,7 +46,6 @@ public partial class MainWindow : Window
         });
 
         if (files.Count == 0) return;
-
         var file = files[0];
         StreamReader reader = new(await file.OpenReadAsync());
         var json = reader.ReadToEnd();
