@@ -59,15 +59,19 @@
       <ListBox.ItemTemplate>
         <DataTemplate>
           <StackPanel Orientation="Vertical">
-            <TextBlock TextWrapping="NoWrap">
+            <TextBlock TextWrapping="NoWrap"
+                       TextTrimming="CharacterEllipsis">
               <Run Text="{Binding Key,Converter={StaticResource SingleLineTextConverter}}"
                    FontWeight="Bold"/>
             </TextBlock>
             <TextBlock Text="{Binding Source,Converter={StaticResource SingleLineTextConverter}}"
                        TextWrapping="NoWrap"
-                       Opacity="0.75"/>
+                       TextTrimming="CharacterEllipsis"
+                       IsVisible="{Binding HasReference}"
+                       Opacity="0.8"/>
             <TextBlock Text="{Binding Target,Converter={StaticResource SingleLineTextConverter},Mode=TwoWay}"
                        TextWrapping="NoWrap"
+                       TextTrimming="CharacterEllipsis"
                        IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNotNullOrEmpty}}}"/>
             <TextBlock TextWrapping="NoWrap"
                        IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNullOrEmpty}}}"
@@ -85,64 +89,116 @@
                   Width="5"
                   ResizeDirection="Columns"/>
 
-    <!-- show when selected entry has reference -->
-    <Grid Grid.Row="1"
-          Grid.Column="2"
-          RowDefinitions="*,Auto,*"
-          Margin="8"
-          IsVisible="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).HasReference}">
+    <Panel Grid.Row="1"
+           Grid.Column="2"
+           IsVisible="{Binding ElementName=EntryList,Path=SelectedItem,Converter={x:Static ObjectConverters.IsNotNull}}">
 
-      <Grid Grid.Row="0"
-            RowDefinitions="Auto,*">
+      <!-- show when selected entry has reference -->
+      <Grid RowDefinitions="*,Auto,*"
+            Margin="8"
+            IsVisible="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).HasReference}">
+
+        <Grid Grid.Row="0"
+              RowDefinitions="Auto,*"
+              ColumnDefinitions="*,Auto">
+          <StackPanel Grid.Row="0"
+                      Grid.Column="0"
+                      Orientation="Horizontal"
+                      Spacing="8">
+            <TextBlock Text="Source Language"
+                       VerticalAlignment="Center"/>
+            <ComboBox VerticalAlignment="Center"
+                      Margin="0,4,0,4">
+              <!-- placeholder languages -->
+              <ComboBoxItem Content="English"/>
+              <ComboBoxItem Content="French"/>
+              <ComboBoxItem Content="Spanish"/>
+            </ComboBox>
+          </StackPanel>
+          <TextBlock Grid.Row="0"
+                     Grid.Column="1"
+                     Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Key}"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+                     Opacity="0.8"/>
+          <TextBox Name="SourceText"
+                   Grid.Row="1"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Source,Mode=TwoWay}"
+                   Margin="0,8,0,0"
+                   IsReadOnly="True"
+                   TextWrapping="Wrap">
+          </TextBox>
+        </Grid>
+
+        <GridSplitter Grid.Row="1"
+                      Height="10"
+                      ResizeDirection="Rows"/>
+
+        <Grid Grid.Row="2"
+              RowDefinitions="Auto,*">
+          <StackPanel Grid.Row="0"
+                      Orientation="Horizontal"
+                      Spacing="8">
+            <TextBlock Text="Target Language"
+                       VerticalAlignment="Center"/>
+            <ComboBox VerticalAlignment="Center"
+                      Margin="0,4,0,4">
+              <!-- placeholder languages -->
+              <ComboBoxItem Content="English"/>
+              <ComboBoxItem Content="French"/>
+              <ComboBoxItem Content="Spanish"/>
+            </ComboBox>
+          </StackPanel>
+          <TextBox Name="TargetText"
+                   Grid.Row="1"
+                   Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Target,Mode=TwoWay}"
+                   Margin="0,8,0,0"
+                   TextWrapping="Wrap"
+                   AcceptsReturn="True">
+          </TextBox>
+        </Grid>
+
+      </Grid>
+
+      <!-- show when selected entry does not have reference -->
+      <Grid RowDefinitions="Auto,*"
+            ColumnDefinitions="*,Auto"
+            Margin="8"
+            IsVisible="{Binding ElementName=EntryList,Path=!((m:Entry)SelectedItem).HasReference}">
         <StackPanel Grid.Row="0"
-                    Height="32"
-                    Orientation="Horizontal">
-          <TextBlock Text="Source Language"/>
+                    Grid.Column="0"
+                    Orientation="Horizontal"
+                    Spacing="8">
+          <TextBlock Text="Target Language"
+                     VerticalAlignment="Center"/>
+          <ComboBox VerticalAlignment="Center"
+                    Margin="0,4,0,4">
+            <!-- placeholder languages -->
+            <ComboBoxItem Content="English"/>
+            <ComboBoxItem Content="French"/>
+            <ComboBoxItem Content="Spanish"/>
+          </ComboBox>
         </StackPanel>
-        <TextBox Name="SourceText"
+        <TextBlock Grid.Row="0"
+                   Grid.Column="1"
+                   Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Key}"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center"
+                   Opacity="0.8"/>
+        <TextBox Name="NoRefTargetText"
                  Grid.Row="1"
-                 Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Source,Mode=TwoWay}"
-                 IsReadOnly="True"
-                 TextWrapping="Wrap">
+                 Grid.Column="0"
+                 Grid.ColumnSpan="2"
+                 Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Target,Mode=TwoWay}"
+                 Margin="0,8,0,0"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True">
         </TextBox>
       </Grid>
-
-      <GridSplitter Grid.Row="1"
-                    Height="10"
-                    ResizeDirection="Rows"/>
-
-      <Grid Grid.Row="2"
-            RowDefinitions="Auto,*">
-        <StackPanel Grid.Row="0"
-                    Height="32">
-          <TextBlock Text="Target Language"/>
-        </StackPanel>
-        <TextBox Name="TargetText"
-                Grid.Row="1"
-                Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Target,Mode=TwoWay}"
-                TextWrapping="Wrap"
-                AcceptsReturn="True">
-        </TextBox>
-      </Grid>
-
-    </Grid>
-
-    <!-- show when selected entry does not have reference -->
-    <Grid Grid.Row="1"
-          Grid.Column="2"
-          RowDefinitions="Auto,*"
-          Margin="8"
-          IsVisible="{Binding ElementName=EntryList,Path=!((m:Entry)SelectedItem).HasReference}">
-      <StackPanel Grid.Row="0"
-                  Height="32">
-      </StackPanel>
-      <TextBox Name="NoRefTargetText"
-              Grid.Row="1"
-              Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Target,Mode=TwoWay}"
-              TextWrapping="Wrap"
-              AcceptsReturn="True">
-      </TextBox>
-    </Grid>
+    
+    </Panel>
 
   </Grid>
 
