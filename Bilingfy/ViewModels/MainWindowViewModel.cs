@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 
 namespace Bilingfy.ViewModels;
 
+public delegate void ViewCallbackEventHandler();
+
 /// <summary>
 /// The data context model for the <see cref="MainWindow"/>.
 /// </summary>
@@ -142,4 +144,33 @@ public partial class MainWindowViewModel : ViewModelBase
         });
         return true;
     }
+
+    public void CommandOpenFile()
+    {
+        OpenFile?.Invoke();
+    }
+
+    public void CommandOpenReference()
+    {
+        OpenReference?.Invoke();
+    }
+
+    public void CommandSaveFile()
+    {
+        SaveFile?.Invoke();
+    }
+
+    public void CommandSaveAs()
+    {
+        SaveAs?.Invoke();
+    }
+
+    public event ViewCallbackEventHandler? OpenFile;
+
+    public event ViewCallbackEventHandler? OpenReference;
+
+    public event ViewCallbackEventHandler? SaveFile;
+
+    public event ViewCallbackEventHandler? SaveAs;
+
 }

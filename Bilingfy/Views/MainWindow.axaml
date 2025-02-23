@@ -30,10 +30,18 @@
                Grid.ColumnSpan="3">
       <Menu DockPanel.Dock="Top">
         <MenuItem Header="_File">
-          <MenuItem Header="Open Reference..." Click="MenuOpenReference"/>
-          <MenuItem Header="Open..."/>
-          <MenuItem Header="Save"/>
-          <MenuItem Header="Save As..."/>
+          <MenuItem Header="Open Reference..."
+                    Command="{Binding CommandOpenReference}"
+                    HotKey="Ctrl+R"/>
+          <MenuItem Header="Open..."
+                    Command="{Binding CommandOpenFile}"
+                    HotKey="Ctrl+O"/>
+          <MenuItem Header="Save"
+                    Command="{Binding CommandSaveFile}"
+                    HotKey="Ctrl+S"/>
+          <MenuItem Header="Save As..."
+                    Command="{Binding CommandSaveAs}"
+                    HotKey="Ctrl+Shift+S"/>
           <Separator/>
           <MenuItem Header="Options..."/>
           <Separator/>

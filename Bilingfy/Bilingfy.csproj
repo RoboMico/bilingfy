@@ -26,5 +26,6 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Projektanker.Icons.Avalonia" Version="9.6.0" />
     <PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" Version="9.6.0" />
+    <PackageReference Include="System.Windows.Extensions" Version="9.0.2" />
   </ItemGroup>
 </Project>
