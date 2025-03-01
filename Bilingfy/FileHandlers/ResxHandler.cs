@@ -1,7 +1,7 @@
 using System;
-using System.Resources;
 using System.Collections.Generic;
 using System.Collections;
+using System.Resources.NetStandard;
 
 namespace Bilingfy.FileHandlers;
 
@@ -13,7 +13,7 @@ public class ResxHandler(string path) : FileHandler(path)
 {
     public override Dictionary<string, string> Load()
     {
-        ResourceReader reader = new(Path);
+        ResXResourceReader reader = new(Path);
         Dictionary<string, string> dict = [];
         foreach (DictionaryEntry entry in reader)
         {
@@ -25,7 +25,7 @@ public class ResxHandler(string path) : FileHandler(path)
 
     public override void Save(Dictionary<string, string> dict)
     {
-        ResourceWriter writer = new(Path);
+        ResXResourceWriter writer = new(Path);
         foreach (KeyValuePair<string, string> entry in dict)
         {
             if (!string.IsNullOrEmpty(entry.Value))

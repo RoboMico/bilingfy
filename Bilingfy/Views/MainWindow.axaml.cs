@@ -115,7 +115,7 @@ public partial class MainWindow : Window
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "Save File",
-            FileTypeChoices = SupportedFileTypes
+            FileTypeChoices = SupportedFileTypes[1..]
         });
         if (file is null) return;
         _saveFilePath = file.Path.AbsolutePath;
