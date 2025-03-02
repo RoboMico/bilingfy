@@ -111,7 +111,7 @@ public partial class MainWindowViewModel : ViewModelBase
             }
             list.Add(entry);
         }
-        list.Sort(FilterOptions.GetSortComparison(options.Sorting));
+        list.Sort(FilterOptions.GetSortComparison(options.Sorting, options.IsSortingReversed));
         foreach (var entry in list)
         {
             Entries.Add(entry);
@@ -163,6 +163,12 @@ public partial class MainWindowViewModel : ViewModelBase
     public void CommandSaveAs()
     {
         SaveAs?.Invoke();
+    }
+
+    public void CommandSortButtonClicked()
+    {
+        FilterOptions.IsSortingReversed = !FilterOptions.IsSortingReversed;
+        ApplyFilter();
     }
 
     public event ViewCallbackEventHandler? OpenFile;

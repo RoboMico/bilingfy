@@ -57,40 +57,72 @@
       </Menu>
     </DockPanel>
 
-    <ListBox Name="EntryList"
-             Grid.Row="1"
-             Grid.Column="0"
-             SelectionMode="Single,AlwaysSelected"
-             ItemsSource="{Binding Entries}"
-             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-             ScrollViewer.VerticalScrollBarVisibility="Visible">
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <StackPanel Orientation="Vertical">
-            <TextBlock TextWrapping="NoWrap"
-                       TextTrimming="CharacterEllipsis">
-              <Run Text="{Binding Key,Converter={StaticResource SingleLineTextConverter}}"
-                   FontWeight="Bold"/>
-            </TextBlock>
-            <TextBlock Text="{Binding Source,Converter={StaticResource SingleLineTextConverter}}"
-                       TextWrapping="NoWrap"
-                       TextTrimming="CharacterEllipsis"
-                       IsVisible="{Binding HasReference}"
-                       Opacity="0.8"/>
-            <TextBlock Text="{Binding Target,Converter={StaticResource SingleLineTextConverter},Mode=TwoWay}"
-                       TextWrapping="NoWrap"
-                       TextTrimming="CharacterEllipsis"
-                       IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNotNullOrEmpty}}}"/>
-            <TextBlock TextWrapping="NoWrap"
-                       IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNullOrEmpty}}}"
-                       Opacity="0.9">
-              <Run Text="Untranslated"
-                   Foreground="Red"/>
-            </TextBlock>
-          </StackPanel>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
+    <Grid Grid.Row="1"
+          Grid.Column="0"
+          RowDefinitions="Auto,Auto,*">
+      <Panel Grid.Row="0">
+        <TextBlock Text="{Binding Entries.Count,StringFormat='{}{0} entries'}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   Margin="8"/>
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="8"
+                    Spacing="8">
+          <ComboBox Name="ComboBoxSorting">
+            <ComboBoxItem>Default</ComboBoxItem>
+            <ComboBoxItem>Key</ComboBoxItem>
+            <ComboBoxItem>Source</ComboBoxItem>
+            <ComboBoxItem>Target</ComboBoxItem>
+          </ComboBox>
+          <Button Command="{Binding CommandSortButtonClicked}">
+            <Panel>
+              <i:Icon Value="fa-solid fa-arrow-down-short-wide"
+                      IsVisible="{Binding !FilterOptions.IsSortingReversed}"/>
+              <i:Icon Value="fa-solid fa-arrow-up-wide-short"
+                      IsVisible="{Binding FilterOptions.IsSortingReversed}"/>
+            </Panel>
+          </Button>
+        </StackPanel>
+
+      </Panel>
+      <Grid Grid.Row="1"
+            ColumnDefinitions="Auto,*,Auto,Auto">
+      </Grid>
+      <ListBox Name="EntryList"
+               Grid.Row="2"
+               SelectionMode="Single,AlwaysSelected"
+               ItemsSource="{Binding Entries}"
+               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+               ScrollViewer.VerticalScrollBarVisibility="Visible">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Orientation="Vertical">
+              <TextBlock TextWrapping="NoWrap"
+                        TextTrimming="CharacterEllipsis">
+                <Run Text="{Binding Key,Converter={StaticResource SingleLineTextConverter}}"
+                    FontWeight="Bold"/>
+              </TextBlock>
+              <TextBlock Text="{Binding Source,Converter={StaticResource SingleLineTextConverter}}"
+                        TextWrapping="NoWrap"
+                        TextTrimming="CharacterEllipsis"
+                        IsVisible="{Binding HasReference}"
+                        Opacity="0.8"/>
+              <TextBlock Text="{Binding Target,Converter={StaticResource SingleLineTextConverter},Mode=TwoWay}"
+                        TextWrapping="NoWrap"
+                        TextTrimming="CharacterEllipsis"
+                        IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNotNullOrEmpty}}}"/>
+              <TextBlock TextWrapping="NoWrap"
+                        IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNullOrEmpty}}}"
+                        Opacity="0.9">
+                <Run Text="Untranslated"
+                    Foreground="Red"/>
+              </TextBlock>
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
 
     <GridSplitter Grid.Row="1"
                   Grid.Column="1"

@@ -17,7 +17,7 @@ namespace Bilingfy.Views;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private MainWindowViewModel _vm;
+    private readonly MainWindowViewModel _vm;
 
     private Dictionary<string, string> _sourceDict = [];
 
