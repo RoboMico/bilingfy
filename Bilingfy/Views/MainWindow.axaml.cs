@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Text.Json;
+using System.Threading.Tasks;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Bilingfy.FileHandlers;
-using Bilingfy.Models;
 using Bilingfy.ViewModels;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
 
 namespace Bilingfy.Views;
 
@@ -57,9 +56,19 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    private async void OpenReference()
+    private TopLevel? GetFileSystem()
     {
         var topLevel = GetTopLevel(this);
+        if (topLevel == null)
+        {
+            MsgBox.ShowUnknownError(this, "TopLevel");
+        }
+        return topLevel;
+    }
+
+    private async void OpenReference()
+    {
+        var topLevel = GetFileSystem();
         if (topLevel == null) return;
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
@@ -71,7 +80,18 @@ public partial class MainWindow : Window
 
         if (files.Count == 0) return;
         var file = files[0];
-        _sourceDict = FileHandler.Recognize(file.Path.AbsolutePath).Load();
+        try
+        {
+            _sourceDict = FileHandler.Recognize(file.Path.AbsolutePath).Load();
+        }
+        catch (Exception ex)
+        {
+            MsgBox.ShowError(this, "Error", string.Format(@"Failed to load the file:
+{0}
+
+Perhaps the file is corrupted or in a wrong format.", ex.Message));
+            return;
+        }
         var targetDict = _vm.ExportTarget();
         _vm.BuildEntryPool(_sourceDict, targetDict);
         _vm.ApplyFilter();
@@ -79,7 +99,7 @@ public partial class MainWindow : Window
 
     private async void OpenFile()
     {
-        var topLevel = GetTopLevel(this);
+        var topLevel = GetFileSystem();
         if (topLevel == null) return;
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
@@ -91,7 +111,19 @@ public partial class MainWindow : Window
 
         if (files.Count == 0) return;
         var file = files[0];
-        var targetDict = FileHandler.Recognize(file.Path.AbsolutePath).Load();
+        Dictionary<string, string> targetDict;
+        try
+        {
+            targetDict = FileHandler.Recognize(file.Path.AbsolutePath).Load();
+        }
+        catch (Exception ex)
+        {
+            MsgBox.ShowError(this, "Error", string.Format(@"Failed to load the file:
+{0}
+
+Perhaps the file is corrupted or in a wrong format.", ex.Message));
+            return;
+        }
         _vm.BuildEntryPool(_sourceDict, targetDict);
         _vm.ApplyFilter();
     }
@@ -104,12 +136,20 @@ public partial class MainWindow : Window
             return;
         }
         var handler = FileHandler.Recognize(_saveFilePath);
-        handler.Save(_vm.ExportTarget());
+        try
+        {
+            handler.Save(_vm.ExportTarget());
+        }
+        catch (Exception ex)
+        {
+            MsgBox.ShowError(this, "Error", string.Format(@"Failed to save the file:
+{0}", ex.Message));
+        }
     }
 
     private async void SaveAs()
     {
-        var topLevel = GetTopLevel(this);
+        var topLevel = GetFileSystem();
         if (topLevel == null) return;
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions

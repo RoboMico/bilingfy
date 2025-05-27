@@ -112,9 +112,9 @@
               <TextBlock Text="{Binding Target,Converter={StaticResource SingleLineTextConverter},Mode=TwoWay}"
                         TextWrapping="NoWrap"
                         TextTrimming="CharacterEllipsis"
-                        IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNotNullOrEmpty}}}"/>
+                        IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
               <TextBlock TextWrapping="NoWrap"
-                        IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNullOrEmpty}}}"
+                        IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNullOrEmpty}}"
                         Opacity="0.9">
                 <Run Text="Untranslated"
                     Foreground="Red"/>
