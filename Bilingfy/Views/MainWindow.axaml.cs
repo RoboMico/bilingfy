@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Bilingfy.FileHandlers;
 using Bilingfy.ViewModels;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Dto;
-using MsBox.Avalonia.Enums;
+using System;
+using System.Collections.Generic;
 
 namespace Bilingfy.Views;
 
@@ -18,7 +14,7 @@ public partial class MainWindow : Window
 {
     private readonly MainWindowViewModel _vm;
 
-    private Dictionary<string, string> _sourceDict = [];
+    private Dictionary<string, string> _refDict = [];
 
     private string? _saveFilePath = null;
 
@@ -52,6 +48,7 @@ public partial class MainWindow : Window
         _vm.OpenFile += OpenFile;
         _vm.SaveFile += SaveFile;
         _vm.SaveAs += SaveAs;
+        _vm.ClearReference += ClearReference;
         DataContext = _vm;
         InitializeComponent();
     }
@@ -82,7 +79,7 @@ public partial class MainWindow : Window
         var file = files[0];
         try
         {
-            _sourceDict = FileHandler.Recognize(file.Path.AbsolutePath).Load();
+            _refDict = FileHandler.Recognize(file.Path.AbsolutePath).Load();
         }
         catch (Exception ex)
         {
@@ -93,7 +90,7 @@ Perhaps the file is corrupted or in a wrong format.", ex.Message));
             return;
         }
         var targetDict = _vm.ExportTarget();
-        _vm.BuildEntryPool(_sourceDict, targetDict);
+        _vm.BuildEntryPool(_refDict, targetDict);
         _vm.ApplyFilter();
     }
 
@@ -115,6 +112,7 @@ Perhaps the file is corrupted or in a wrong format.", ex.Message));
         try
         {
             targetDict = FileHandler.Recognize(file.Path.AbsolutePath).Load();
+            _saveFilePath = file.Path.AbsolutePath;
         }
         catch (Exception ex)
         {
@@ -124,13 +122,13 @@ Perhaps the file is corrupted or in a wrong format.", ex.Message));
 Perhaps the file is corrupted or in a wrong format.", ex.Message));
             return;
         }
-        _vm.BuildEntryPool(_sourceDict, targetDict);
+        _vm.BuildEntryPool(_refDict, targetDict);
         _vm.ApplyFilter();
     }
 
     private void SaveFile()
     {
-        if (_saveFilePath == null)
+        if (_saveFilePath is null)
         {
             SaveAs();
             return;
@@ -157,8 +155,18 @@ Perhaps the file is corrupted or in a wrong format.", ex.Message));
             Title = "Save File",
             FileTypeChoices = SupportedFileTypes[1..]
         });
+
         if (file is null) return;
         _saveFilePath = file.Path.AbsolutePath;
         SaveFile();
+    }
+
+    private async void ClearReference()
+    {
+        var res = await MsgBox.ShowConfirmation(this, "Clear Reference", "Are you sure you want to clear the references of all entries?");
+        if (!res) return;
+        _refDict.Clear();
+        _vm.BuildEntryPool(_refDict, _vm.ExportTarget());
+        _vm.ApplyFilter();
     }
 }

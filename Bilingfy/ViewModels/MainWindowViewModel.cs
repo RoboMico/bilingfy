@@ -6,6 +6,9 @@ using System.Collections.ObjectModel;
 
 namespace Bilingfy.ViewModels;
 
+/// <summary>
+/// The delegate for the event handlers of the view model calling functions in the view.
+/// </summary>
 public delegate void ViewCallbackEventHandler();
 
 /// <summary>
@@ -18,6 +21,7 @@ public partial class MainWindowViewModel : ViewModelBase
     /// </summary>
     public MainWindowViewModel()
     {
+        FilterOptions.PropertyChanged += (s, e) => ApplyFilter();
     }
 
     /// <summary>
@@ -41,22 +45,22 @@ public partial class MainWindowViewModel : ViewModelBase
     public FilterOptions FilterOptions { get; set; } = new();
 
     /// <summary>
-    /// Build the <see cref="EntryPool"/> based on the given source and target dictionaries.
+    /// Build the <see cref="EntryPool"/> based on the given reference and target dictionaries.
     /// </summary>
-    /// <param name="sourceDict">The source dictionary.</param>
+    /// <param name="refDict">The reference dictionary.</param>
     /// <param name="targetDict">The target dictionary.</param>
-    public void BuildEntryPool(Dictionary<string, string> sourceDict, Dictionary<string, string> targetDict)
+    public void BuildEntryPool(Dictionary<string, string> refDict, Dictionary<string, string> targetDict)
     {
         EntryPool.Clear();
         PresentKeys.Clear();
         Dictionary<string, Entry> tempDict = [];
         int counter = 0;
-        foreach (var p in sourceDict)
+        foreach (var p in refDict)
         {
             tempDict[p.Key] = new Entry
             {
                 Key = p.Key,
-                Source = p.Value,
+                Ref = p.Value,
                 SortOrder = counter++
             };
         }
@@ -64,15 +68,15 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             if (tempDict.TryGetValue(p.Key, out Entry? entry))
             {
-                entry.Target = p.Value;
+                entry.Value = p.Value;
             }
             else
             {
                 tempDict[p.Key] = new Entry
                 {
                     Key = p.Key,
-                    Source = null,
-                    Target = p.Value,
+                    Ref = null,
+                    Value = p.Value,
                     SortOrder = counter++
                 };
             }
@@ -95,15 +99,15 @@ public partial class MainWindowViewModel : ViewModelBase
         List<Entry> list = [];
         foreach (var entry in EntryPool)
         {
-            if (options.OnlyShowUntranslated && string.IsNullOrEmpty(entry.Target))
+            if (options.OnlyShowUntranslated && string.IsNullOrEmpty(entry.Value))
             {
                 continue;
             }
             if (!(
                 string.IsNullOrEmpty(options.SearchText)
                 || entry.Key.Contains(options.SearchText, StringComparison.OrdinalIgnoreCase)
-                || (entry.Source is not null && entry.Source.Contains(options.SearchText, StringComparison.OrdinalIgnoreCase))
-                || entry.Target.Contains(options.SearchText, StringComparison.OrdinalIgnoreCase)
+                || (entry.Ref is not null && entry.Ref.Contains(options.SearchText, StringComparison.OrdinalIgnoreCase))
+                || entry.Value.Contains(options.SearchText, StringComparison.OrdinalIgnoreCase)
                 )
             )
             {
@@ -123,7 +127,7 @@ public partial class MainWindowViewModel : ViewModelBase
         Dictionary<string, string> result = [];
         foreach (var entry in EntryPool)
         {
-            result[entry.Key] = entry.Target;
+            result[entry.Key] = entry.Value;
         }
         return result;
     }
@@ -138,8 +142,8 @@ public partial class MainWindowViewModel : ViewModelBase
         EntryPool.Add(new Entry
         {
             Key = key,
-            Source = null,
-            Target = "",
+            Ref = null,
+            Value = "",
             SortOrder = EntryPool.Count
         });
         return true;
@@ -168,7 +172,11 @@ public partial class MainWindowViewModel : ViewModelBase
     public void CommandSortButtonClicked()
     {
         FilterOptions.IsSortingReversed = !FilterOptions.IsSortingReversed;
-        ApplyFilter();
+    }
+
+    public void CommandClearReferences()
+    {
+        ClearReference?.Invoke();
     }
 
     public event ViewCallbackEventHandler? OpenFile;
@@ -179,4 +187,5 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public event ViewCallbackEventHandler? SaveAs;
 
+    public event ViewCallbackEventHandler? ClearReference;
 }

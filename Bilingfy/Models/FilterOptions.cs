@@ -27,14 +27,14 @@ public class FilterOptions : INotifyPropertyChanged
         Key,
 
         /// <summary>
-        /// Sort by the source text in alphabetical order.
+        /// Sort by the reference text in alphabetical order.
         /// </summary>
-        Source,
+        Reference,
 
         /// <summary>
         /// Sort by the target text in alphabetical order.
         /// </summary>
-        Target
+        Text
     }
 
     public string SearchText
@@ -86,8 +86,8 @@ public class FilterOptions : INotifyPropertyChanged
         Comparison<Entry> comp = sortType switch
         {
             SortType.Key => (x, y) => string.Compare(x.Key, y.Key, StringComparison.Ordinal),
-            SortType.Source => (x, y) => string.Compare(x.Source ?? x.Key, y.Source ?? y.Key, StringComparison.Ordinal),
-            SortType.Target => (x, y) => string.Compare(x.Target, y.Target, StringComparison.Ordinal),
+            SortType.Reference => (x, y) => string.Compare(x.Ref ?? x.Key, y.Ref ?? y.Key, StringComparison.Ordinal),
+            SortType.Text => (x, y) => string.Compare(x.Value, y.Value, StringComparison.Ordinal),
             _ => (x, y) => x.SortOrder.CompareTo(y.SortOrder),
         };
         if (reversed)

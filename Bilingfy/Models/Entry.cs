@@ -8,7 +8,7 @@ namespace Bilingfy.Models;
 /// </summary>
 public class Entry : INotifyPropertyChanged
 {
-    private string _target = "";
+    private string _value = "";
 
     /// <summary>
     /// The index key of the entry.
@@ -18,18 +18,18 @@ public class Entry : INotifyPropertyChanged
     /// <summary>
     /// The text in the source language.
     /// </summary>
-    public string? Source { init; get; } = null;
+    public string? Ref { init; get; } = null;
 
     /// <summary>
     /// The text in the target language.
     /// </summary>
-    public string Target
+    public string Value
     {
-        get => _target;
+        get => _value;
         set
         {
-            if (_target == value) return;
-            _target = value;
+            if (_value == value) return;
+            _value = value;
             OnPropertyChanged();
         }
     }
@@ -42,7 +42,7 @@ public class Entry : INotifyPropertyChanged
     /// <summary>
     /// Whether the entry has a reference in the source language.
     /// </summary>
-    public bool HasReference => Source is not null;
+    public bool HasReference => Ref is not null;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

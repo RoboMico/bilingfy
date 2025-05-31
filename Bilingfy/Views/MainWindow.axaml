@@ -49,6 +49,9 @@
           <MenuItem Header="Exit"/>
         </MenuItem>
         <MenuItem Header="_Edit">
+          <MenuItem Header="Remove All References"
+                    Command="{Binding CommandClearReferences}"
+                    HotKey="Ctrl+Alt+R"/>
         </MenuItem>
         <MenuItem Header="_Tools">
         </MenuItem>
@@ -70,11 +73,13 @@
                     HorizontalAlignment="Right"
                     Margin="8"
                     Spacing="8">
-          <ComboBox Name="ComboBoxSorting">
+          <ComboBox Name="ComboBoxSorting"
+                    SelectedIndex="{Binding FilterOptions.Sorting,Mode=TwoWay}"
+                    Width="120">
             <ComboBoxItem>Default</ComboBoxItem>
             <ComboBoxItem>Key</ComboBoxItem>
-            <ComboBoxItem>Source</ComboBoxItem>
-            <ComboBoxItem>Target</ComboBoxItem>
+            <ComboBoxItem>Reference</ComboBoxItem>
+            <ComboBoxItem>Text</ComboBoxItem>
           </ComboBox>
           <Button Command="{Binding CommandSortButtonClicked}">
             <Panel>
@@ -104,17 +109,17 @@
                 <Run Text="{Binding Key,Converter={StaticResource SingleLineTextConverter}}"
                     FontWeight="Bold"/>
               </TextBlock>
-              <TextBlock Text="{Binding Source,Converter={StaticResource SingleLineTextConverter}}"
+              <TextBlock Text="{Binding Ref,Converter={StaticResource SingleLineTextConverter}}"
                         TextWrapping="NoWrap"
                         TextTrimming="CharacterEllipsis"
                         IsVisible="{Binding HasReference}"
                         Opacity="0.8"/>
-              <TextBlock Text="{Binding Target,Converter={StaticResource SingleLineTextConverter},Mode=TwoWay}"
+              <TextBlock Text="{Binding Value,Converter={StaticResource SingleLineTextConverter},Mode=TwoWay}"
                         TextWrapping="NoWrap"
                         TextTrimming="CharacterEllipsis"
-                        IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                        IsVisible="{Binding Value,Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
               <TextBlock TextWrapping="NoWrap"
-                        IsVisible="{Binding Target,Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                        IsVisible="{Binding Value,Converter={x:Static StringConverters.IsNullOrEmpty}}"
                         Opacity="0.9">
                 <Run Text="Untranslated"
                     Foreground="Red"/>
@@ -162,11 +167,11 @@
                      HorizontalAlignment="Right"
                      VerticalAlignment="Center"
                      Opacity="0.8"/>
-          <TextBox Name="SourceText"
+          <TextBox Name="RefText"
                    Grid.Row="1"
                    Grid.Column="0"
                    Grid.ColumnSpan="2"
-                   Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Source,Mode=TwoWay}"
+                   Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Ref,Mode=TwoWay}"
                    Margin="0,8,0,0"
                    IsReadOnly="True"
                    TextWrapping="Wrap">
@@ -194,7 +199,7 @@
           </StackPanel>
           <TextBox Name="TargetText"
                    Grid.Row="1"
-                   Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Target,Mode=TwoWay}"
+                   Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Value,Mode=TwoWay}"
                    Margin="0,8,0,0"
                    TextWrapping="Wrap"
                    AcceptsReturn="True">
@@ -232,7 +237,7 @@
                  Grid.Row="1"
                  Grid.Column="0"
                  Grid.ColumnSpan="2"
-                 Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Target,Mode=TwoWay}"
+                 Text="{Binding ElementName=EntryList,Path=((m:Entry)SelectedItem).Value,Mode=TwoWay}"
                  Margin="0,8,0,0"
                  TextWrapping="Wrap"
                  AcceptsReturn="True">
