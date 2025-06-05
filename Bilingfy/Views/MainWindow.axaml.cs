@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Bilingfy.FileHandlers;
 using Bilingfy.ViewModels;
@@ -44,11 +45,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         _vm = new MainWindowViewModel();
-        _vm.OpenReference += OpenReference;
-        _vm.OpenFile += OpenFile;
-        _vm.SaveFile += SaveFile;
-        _vm.SaveAs += SaveAs;
-        _vm.ClearReference += ClearReference;
         DataContext = _vm;
         InitializeComponent();
     }
@@ -63,7 +59,7 @@ public partial class MainWindow : Window
         return topLevel;
     }
 
-    private async void OpenReference()
+    private async void OnOpenReference(object? sender, RoutedEventArgs e)
     {
         var topLevel = GetFileSystem();
         if (topLevel == null) return;
@@ -94,7 +90,7 @@ Perhaps the file is corrupted or in a wrong format.", ex.Message));
         _vm.ApplyFilter();
     }
 
-    private async void OpenFile()
+    private async void OnOpenFile(object? sender, RoutedEventArgs e)
     {
         var topLevel = GetFileSystem();
         if (topLevel == null) return;
@@ -124,19 +120,21 @@ Perhaps the file is corrupted or in a wrong format.", ex.Message));
         }
         _vm.BuildEntryPool(_refDict, targetDict);
         _vm.ApplyFilter();
+        _vm.IsUnsaved = false;
     }
 
-    private void SaveFile()
+    private void OnSaveFile(object? sender, RoutedEventArgs e)
     {
         if (_saveFilePath is null)
         {
-            SaveAs();
+            OnSaveAs(sender, e);
             return;
         }
         var handler = FileHandler.Recognize(_saveFilePath);
         try
         {
             handler.Save(_vm.ExportTarget());
+            _vm.IsUnsaved = false;
         }
         catch (Exception ex)
         {
@@ -145,7 +143,7 @@ Perhaps the file is corrupted or in a wrong format.", ex.Message));
         }
     }
 
-    private async void SaveAs()
+    private async void OnSaveAs(object? sender, RoutedEventArgs e)
     {
         var topLevel = GetFileSystem();
         if (topLevel == null) return;
@@ -158,15 +156,26 @@ Perhaps the file is corrupted or in a wrong format.", ex.Message));
 
         if (file is null) return;
         _saveFilePath = file.Path.AbsolutePath;
-        SaveFile();
+        OnSaveFile(sender, e);
     }
 
-    private async void ClearReference()
+    private async void OnClearReference(object? sender, RoutedEventArgs e)
     {
         var res = await MsgBox.ShowConfirmation(this, "Clear Reference", "Are you sure you want to clear the references of all entries?");
         if (!res) return;
         _refDict.Clear();
         _vm.BuildEntryPool(_refDict, _vm.ExportTarget());
         _vm.ApplyFilter();
+    }
+
+    private async void OnWindowClosing(object? sender, WindowClosingEventArgs e)
+    {
+        // Console.WriteLine("Unsaved = {0}", _vm.IsUnsaved);
+        if (!_vm.IsUnsaved) return;
+        var res = await MsgBox.ShowConfirmation(this, "Exit", "Exit without saving?");
+        if (!res)
+        {
+            e.Cancel = true;
+        }
     }
 }

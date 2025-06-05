@@ -11,7 +11,8 @@
         x:DataType="vm:MainWindowViewModel"
         x:CompileBindings="True"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Bilingfy">
+        Title="Bilingfy"
+        Closing="OnWindowClosing">
 
   <Design.DataContext>
       <!-- This only sets the DataContext for the previewer in an IDE,
@@ -32,16 +33,16 @@
       <Menu DockPanel.Dock="Top">
         <MenuItem Header="_File">
           <MenuItem Header="Open Reference..."
-                    Command="{Binding CommandOpenReference}"
+                    Click="OnOpenReference"
                     HotKey="Ctrl+R"/>
           <MenuItem Header="Open..."
-                    Command="{Binding CommandOpenFile}"
+                    Click="OnOpenFile"
                     HotKey="Ctrl+O"/>
           <MenuItem Header="Save"
-                    Command="{Binding CommandSaveFile}"
+                    Click="OnSaveFile"
                     HotKey="Ctrl+S"/>
           <MenuItem Header="Save As..."
-                    Command="{Binding CommandSaveAs}"
+                    Click="OnSaveAs"
                     HotKey="Ctrl+Shift+S"/>
           <Separator/>
           <MenuItem Header="Options..."/>
@@ -50,7 +51,7 @@
         </MenuItem>
         <MenuItem Header="_Edit">
           <MenuItem Header="Remove All References"
-                    Command="{Binding CommandClearReferences}"
+                    Click="OnClearReference"
                     HotKey="Ctrl+Alt+R"/>
         </MenuItem>
         <MenuItem Header="_Tools">
@@ -65,10 +66,17 @@
           Grid.Column="0"
           RowDefinitions="Auto,Auto,*">
       <Panel Grid.Row="0">
-        <TextBlock Text="{Binding Entries.Count,StringFormat='{}{0} entries'}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Left"
-                   Margin="8"/>
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    Margin="8">
+          <TextBlock Text="{Binding Entries.Count,StringFormat='{}{0} entries'}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Left"/>
+          <TextBlock Text="*"
+                     IsVisible="{Binding IsUnsaved,Mode=TwoWay}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Left"/>
+        </StackPanel>
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Margin="8"

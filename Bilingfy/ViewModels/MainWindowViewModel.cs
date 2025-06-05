@@ -3,13 +3,9 @@ using Bilingfy.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Bilingfy.ViewModels;
-
-/// <summary>
-/// The delegate for the event handlers of the view model calling functions in the view.
-/// </summary>
-public delegate void ViewCallbackEventHandler();
 
 /// <summary>
 /// The data context model for the <see cref="MainWindow"/>.
@@ -43,6 +39,11 @@ public partial class MainWindowViewModel : ViewModelBase
     /// The current filter options.
     /// </summary>
     public FilterOptions FilterOptions { get; set; } = new();
+
+    /// <summary>
+    /// Whether unsaved changes exist.
+    /// </summary>
+    public bool IsUnsaved { get; set; } = false;
 
     /// <summary>
     /// Build the <see cref="EntryPool"/> based on the given reference and target dictionaries.
@@ -95,6 +96,10 @@ public partial class MainWindowViewModel : ViewModelBase
     public void ApplyFilter(FilterOptions? options = null)
     {
         options ??= FilterOptions;
+        foreach (var entry in Entries)
+        {
+            entry.PropertyChanged -= OnEntryValueChanged;
+        }
         Entries.Clear();
         List<Entry> list = [];
         foreach (var entry in EntryPool)
@@ -119,6 +124,7 @@ public partial class MainWindowViewModel : ViewModelBase
         foreach (var entry in list)
         {
             Entries.Add(entry);
+            entry.PropertyChanged += OnEntryValueChanged;
         }
     }
 
@@ -149,43 +155,17 @@ public partial class MainWindowViewModel : ViewModelBase
         return true;
     }
 
-    public void CommandOpenFile()
-    {
-        OpenFile?.Invoke();
-    }
-
-    public void CommandOpenReference()
-    {
-        OpenReference?.Invoke();
-    }
-
-    public void CommandSaveFile()
-    {
-        SaveFile?.Invoke();
-    }
-
-    public void CommandSaveAs()
-    {
-        SaveAs?.Invoke();
-    }
-
     public void CommandSortButtonClicked()
     {
         FilterOptions.IsSortingReversed = !FilterOptions.IsSortingReversed;
     }
 
-    public void CommandClearReferences()
+    private void OnEntryValueChanged(object? sender, PropertyChangedEventArgs e)
     {
-        ClearReference?.Invoke();
+        if (e.PropertyName == nameof(Entry.Value))
+        {
+            IsUnsaved = true;
+            // Console.WriteLine("Unsaved = {0}", IsUnsaved);
+        }
     }
-
-    public event ViewCallbackEventHandler? OpenFile;
-
-    public event ViewCallbackEventHandler? OpenReference;
-
-    public event ViewCallbackEventHandler? SaveFile;
-
-    public event ViewCallbackEventHandler? SaveAs;
-
-    public event ViewCallbackEventHandler? ClearReference;
 }
