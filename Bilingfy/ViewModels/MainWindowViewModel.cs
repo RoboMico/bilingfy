@@ -1,5 +1,6 @@
 using Bilingfy.Models;
 using Bilingfy.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,6 +13,9 @@ namespace Bilingfy.ViewModels;
 /// </summary>
 public partial class MainWindowViewModel : ViewModelBase
 {
+    [ObservableProperty]
+    private bool _isUnsaved;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
     /// </summary>
@@ -39,11 +43,6 @@ public partial class MainWindowViewModel : ViewModelBase
     /// The current filter options.
     /// </summary>
     public FilterOptions FilterOptions { get; set; } = new();
-
-    /// <summary>
-    /// Whether unsaved changes exist.
-    /// </summary>
-    public bool IsUnsaved { get; set; } = false;
 
     /// <summary>
     /// Build the <see cref="EntryPool"/> based on the given reference and target dictionaries.
