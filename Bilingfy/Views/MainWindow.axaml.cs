@@ -170,9 +170,15 @@ Perhaps the file is corrupted or in a wrong format.", ex.Message));
 
     private async void OnWindowClosing(object? sender, WindowClosingEventArgs e)
     {
-        if (!_vm.IsUnsaved) return;
+        if (!_vm.IsUnsaved)
+        {
+            return;
+        }
+        e.Cancel = true;
         var res = await MsgBox.ShowConfirmation(this, "Exit", "Exit without saving?");
-        Console.WriteLine(res);
-        e.Cancel = !res;
+        if (res)
+        {
+            Environment.Exit(0);
+        }
     }
 }
