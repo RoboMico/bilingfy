@@ -47,9 +47,12 @@
           <Separator/>
           <MenuItem Header="Options..."/>
           <Separator/>
-          <MenuItem Header="Exit"/>
+          <MenuItem Header="Exit"
+                    Click="OnExitClicked"/>
         </MenuItem>
         <MenuItem Header="_Edit">
+          <MenuItem Header="Delete Entry"
+                    Click="OnDeleteEntry"/>
           <MenuItem Header="Remove All References"
                     Click="OnClearReference"
                     HotKey="Ctrl+Alt+R"/>
@@ -101,14 +104,27 @@
 
       </Panel>
       <Grid Grid.Row="1"
-            ColumnDefinitions="Auto,*,Auto,Auto">
+            ColumnDefinitions="*,Auto">
+        <TextBox Name="TextBoxSearch"
+                 Grid.Column="0"
+                 Watermark="Search or add new entry..."
+                 Margin="8 0 8 8"
+                 Text="{Binding FilterOptions.SearchText, Mode=TwoWay}"/>
+        <Button Name="ButtonAddEntry"
+                Grid.Column="1"
+                Margin="0 0 8 8"
+                Command="{Binding CommandNewEntryClicked}">
+          <i:Icon Value="fa-solid fa-plus"/>
+        </Button>
+
       </Grid>
       <ListBox Name="EntryList"
                Grid.Row="2"
                SelectionMode="Single,AlwaysSelected"
                ItemsSource="{Binding Entries}"
                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-               ScrollViewer.VerticalScrollBarVisibility="Visible">
+               ScrollViewer.VerticalScrollBarVisibility="Visible"
+               KeyDown="EntryList_KeyDown">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <StackPanel Orientation="Vertical">

@@ -167,4 +167,22 @@ public partial class MainWindowViewModel : ViewModelBase
             // Console.WriteLine("Unsaved = {0}", IsUnsaved);
         }
     }
+
+    public void CommandNewEntryClicked()
+    {
+        if (string.IsNullOrWhiteSpace(FilterOptions.SearchText)
+            || PresentKeys.Contains(FilterOptions.SearchText))
+        {
+            return;
+        }
+        EntryPool.Add(new Entry
+        {
+            Key = FilterOptions.SearchText,
+            Ref = null,
+            Value = "",
+            SortOrder = EntryPool.Count
+        });
+        FilterOptions.SearchText = "";
+        IsUnsaved = true;
+    }
 }

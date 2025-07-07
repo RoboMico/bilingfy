@@ -1,7 +1,9 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Bilingfy.FileHandlers;
+using Bilingfy.Models;
 using Bilingfy.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -168,17 +170,40 @@ Perhaps the file is corrupted or in a wrong format.", ex.Message));
         _vm.ApplyFilter();
     }
 
-    private async void OnWindowClosing(object? sender, WindowClosingEventArgs e)
+    private void OnWindowClosing(object? sender, WindowClosingEventArgs e)
     {
-        if (!_vm.IsUnsaved)
-        {
-            return;
-        }
         e.Cancel = true;
-        var res = await MsgBox.ShowConfirmation(this, "Exit", "Exit without saving?");
-        if (res)
+        OnExitClicked(sender, new RoutedEventArgs());
+    }
+
+    private async void OnExitClicked(object? sender, RoutedEventArgs e)
+    {
+        bool confirm = true;
+        if (_vm.IsUnsaved)
+        {
+            confirm = await MsgBox.ShowConfirmation(this, "Exit", "Exit without saving?");
+        }
+        if (confirm)
         {
             Environment.Exit(0);
+        }
+    }
+
+    private void OnDeleteEntry(object? sender, RoutedEventArgs e)
+    {
+        if (EntryList.SelectedItem is not null)
+        {
+            _vm.EntryPool.Remove((Entry)EntryList.SelectedItem);
+            _vm.IsUnsaved = true;
+            _vm.ApplyFilter();
+        }
+    }
+
+    private void EntryList_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Delete)
+        {
+            OnDeleteEntry(sender, e);
         }
     }
 }
