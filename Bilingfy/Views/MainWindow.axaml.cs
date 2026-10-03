@@ -206,4 +206,12 @@ Perhaps the file is corrupted or in a wrong format.", ex.Message));
             OnDeleteEntry(sender, e);
         }
     }
+
+    private void TextBoxSearch_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            _vm.CommandNewEntryClicked();
+        }
+    }
 }

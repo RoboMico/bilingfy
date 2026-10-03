@@ -109,6 +109,7 @@
                  Grid.Column="0"
                  Watermark="Search or add new entry..."
                  Margin="8 0 8 8"
+                 KeyDown="TextBoxSearch_KeyDown"
                  Text="{Binding FilterOptions.SearchText, Mode=TwoWay}"/>
         <Button Name="ButtonAddEntry"
                 Grid.Column="1"
