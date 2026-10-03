@@ -1,0 +1,52 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Styles.Resources>
+    <!--
+      Font Awesome 6 Free (Solid), embedded as an AvaloniaResource through the
+      Assets\** rule in Bilingfy.csproj. The name after '#' must match a family
+      name inside the font file; fa-solid-900.ttf 6.7.2 declares the typographic
+      family "Font Awesome 6 Free" (legacy family: "Font Awesome 6 Free Solid").
+      License: Assets/Fonts/LICENSE-FontAwesome.txt (font: SIL OFL 1.1).
+    -->
+    <FontFamily x:Key="IconFont">avares://Bilingfy/Assets/Fonts#Font Awesome 6 Free</FontFamily>
+
+    <!-- One em of the 14px base size: the square icon box the old <i:Icon> control occupied. -->
+    <x:Double x:Key="IconBoxSize">14</x:Double>
+
+    <!--
+      Font Awesome arrow glyphs advance 576/512 = 1.125em while <i:Icon> clamped
+      them into the 1em box above, so their old on-screen size equals
+      14 / 1.125 = 12.44px. Kept as a single value so the sort button keeps its
+      original 30x25 size.
+    -->
+    <x:Double x:Key="SortIconFontSize">12.44</x:Double>
+  </Styles.Resources>
+
+  <!--
+    Single place for the icon font, size and alignment. Foreground is
+    deliberately not set so the glyph keeps inheriting the button foreground
+    (including its pointer-over state) in both light and dark themes.
+  -->
+  <Style Selector="TextBlock.icon">
+    <Setter Property="FontFamily" Value="{StaticResource IconFont}" />
+    <Setter Property="FontSize" Value="{StaticResource IconBoxSize}" />
+    <Setter Property="Width" Value="{StaticResource IconBoxSize}" />
+    <Setter Property="Height" Value="{StaticResource IconBoxSize}" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="TextAlignment" Value="Center" />
+    <!--
+      In a fixed 1em box the line box starts at the top, which lifts the glyph
+      about 1px above where <i:Icon> used to draw it; this restores that
+      vertical centering inside the box.
+    -->
+    <Setter Property="Padding" Value="0 1 0 0" />
+  </Style>
+
+  <!-- Wide arrows: same box, scaled down to the size the old control produced. -->
+  <Style Selector="TextBlock.icon.sort">
+    <Setter Property="FontSize" Value="{StaticResource SortIconFontSize}" />
+  </Style>
+
+</Styles>

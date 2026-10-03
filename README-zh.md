@@ -21,8 +21,7 @@ uncomment this after we get a contributor
 ### 第三方库和资源
 
 - [Avalonia](https://avaloniaui.net/)（UI 框架）
-- [Projektanker.Icons.Avalonia](https://github.com/Projektanker/Icons.Avalonia)（用于显示图标）
-- [FontAwesome](https://fontawesome.com/)（图标来源）
+- [Font Awesome Free 6.7.2](https://fontawesome.com/)（图标来源，通过内嵌的 `fa-solid-900.ttf` 字体加载，不依赖系统安装字体）。字体协议为 [SIL OFL 1.1](Bilingfy/Assets/Fonts/LICENSE-FontAwesome.txt)，图标为 CC BY 4.0。
 
 ## 协议
 

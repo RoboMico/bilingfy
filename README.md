@@ -23,8 +23,7 @@ uncomment this after we get a contributor
 ### Libraries & Assets from 3rd Party
 
 - [Avalonia](https://avaloniaui.net/) (the UI framework)
-- [Projektanker.Icons.Avalonia](https://github.com/Projektanker/Icons.Avalonia) (for displaying icons)
-- [FontAwesome](https://fontawesome.com/) (provides icons)
+- [Font Awesome Free 6.7.2](https://fontawesome.com/) (provides the icons, used through the embedded `fa-solid-900.ttf` font, no system font installation required). The font is licensed under the [SIL OFL 1.1](Bilingfy/Assets/Fonts/LICENSE-FontAwesome.txt); the icons are CC BY 4.0.
 
 ## License
 

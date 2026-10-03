@@ -4,7 +4,6 @@
         xmlns:m="using:Bilingfy.Models"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="https://github.com/projektanker/icons.avalonia"
         xmlns:conv="using:Bilingfy.Converters"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Bilingfy.Views.MainWindow"
@@ -94,10 +93,14 @@
           </ComboBox>
           <Button Command="{Binding CommandSortButtonClicked}">
             <Panel>
-              <i:Icon Value="fa-solid fa-arrow-down-short-wide"
-                      IsVisible="{Binding !FilterOptions.IsSortingReversed}"/>
-              <i:Icon Value="fa-solid fa-arrow-up-wide-short"
-                      IsVisible="{Binding FilterOptions.IsSortingReversed}"/>
+              <!-- Font Awesome 6 Free Solid: arrow-down-short-wide U+F884 -->
+              <TextBlock Classes="icon sort"
+                         Text="&#xF884;"
+                         IsVisible="{Binding !FilterOptions.IsSortingReversed}"/>
+              <!-- Font Awesome 6 Free Solid: arrow-up-wide-short U+F161 -->
+              <TextBlock Classes="icon sort"
+                         Text="&#xF161;"
+                         IsVisible="{Binding FilterOptions.IsSortingReversed}"/>
             </Panel>
           </Button>
         </StackPanel>
@@ -115,7 +118,9 @@
                 Grid.Column="1"
                 Margin="0 0 8 8"
                 Command="{Binding CommandNewEntryClicked}">
-          <i:Icon Value="fa-solid fa-plus"/>
+          <!-- Font Awesome 6 Free Solid: plus U+F067 -->
+          <TextBlock Classes="icon"
+                     Text="&#xF067;"/>
         </Button>
 
       </Grid>

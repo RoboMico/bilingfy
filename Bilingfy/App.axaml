@@ -12,5 +12,7 @@
   
     <Application.Styles>
         <FluentTheme />
+        <!-- Icon font (Font Awesome 6 Free Solid) and the shared icon style. -->
+        <StyleInclude Source="avares://Bilingfy/Assets/Styles/IconFonts.axaml"/>
     </Application.Styles>
 </Application>
